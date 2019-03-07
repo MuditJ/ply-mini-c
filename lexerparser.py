@@ -18,8 +18,7 @@ symbol_table = [] #For the time being, implemented as a list of dictionaries
 
 t_HASH = r'\#'
 t_HEADER_FILE = r'<stdio.h>' 
-t_FLOW_OPEN = r'{'
-t_FLOW_CLOSE = r'}'
+
 t_SMALL_OPEN = r'\('
 t_SMALL_CLOSE = r'\)'
 t_SEMI_COLON = r';'
@@ -32,12 +31,25 @@ t_COLON =  r'\:'
 t_QUOTE = r'\"'
 
 
+def t_FLOW_OPEN(t):
+	r'{'
+	symbol_table.append([])
+	return t
+
+def t_FLOW_CLOSE(t):
+	r'}'
+	symbol_table.pop()
+	return t
+
+
 def t_check_reserved(t):
 	r'[a-zA-Z][a-zA-Z]*'
 	if t.value in reserved: #If the matched lexeme is one of the reserved words
 		t.type = reserved[t.value]
 	else:
 		t.type = 'IDENTIFIER'
+		if t.value not in symbol_table:
+			symbol_table[-1].append((t.value,t.lexpos))
 	return t
 
 def t_error(token):
@@ -69,6 +81,7 @@ def p_header(p):
 	header : HASH INCLUDE HEADER_FILE
 	'''
 	print('Derived header')
+	print(f'Symbol table currently is: {symbol_table}')
 
 def p_rest(p):
 	'''
@@ -86,6 +99,8 @@ def p_stmt(p):
 	      | empty
 	'''
 	print('Derived statement')
+	if len(p) == 2:
+		print(f'Symbol table currently is:{symbol_table}')
 
 def p_other(p):
 	'''
@@ -93,6 +108,7 @@ def p_other(p):
 				| empty
 	'''
 	print('Derived other statement')
+
 
 def p_switch(p):
 	'''
