@@ -10,11 +10,12 @@ reserved = {'include' : 'INCLUDE', 'main': 'MAIN','int':'INT','void':'VOID',
 'float':'FLOAT','char':'CHAR','double':'DOUBLE','for':'FOR','switch':'SWITCH',
 'case':'CASE','default':'DEFAULT','break':'BREAK','printf':'PRINT'}
 
+
 tokens += reserved.values()
 
 symbol_table = [] #For the time being, implemented as a list of dictionaries
-
-#regex for the different tokens
+tokens_generated = [] #To store the tokens found in the input program
+#regex for the different tokens. Store as a list of dictionaries where the token is the key and its (type,value) the value
 
 t_HASH = r'\#'
 t_HEADER_FILE = r'<stdio.h>' 
@@ -25,7 +26,7 @@ t_SEMI_COLON = r';'
 t_ASSIGNMENT_OP = r'\='
 t_UNARY_OP = r'\++|\--'
 #t_BINARY_OP = r'[\+\-\*\/]'
-t_NUM_LITERAL = r'[0-9][0-9]*'
+
 t_RELATIONAL_OP = r'\<|\>=|\>'
 t_COLON =  r'\:'
 t_QUOTE = r'\"'
@@ -36,11 +37,16 @@ def t_FLOW_OPEN(t):
 	symbol_table.append([])
 	return t
 
+
 def t_FLOW_CLOSE(t):
 	r'}'
 	symbol_table.pop()
 	return t
 
+def t_NUM_LITERAL(t):
+	r'[0-9][0-9]*'
+	t.value = int(t.value)
+	return t
 
 def t_check_reserved(t):
 	r'[a-zA-Z][a-zA-Z]*'
@@ -50,10 +56,12 @@ def t_check_reserved(t):
 		t.type = 'IDENTIFIER'
 		if t.value not in symbol_table:
 			symbol_table[-1].append((t.value,t.lexpos))
+		tokens_generated.append((t.type,t.value))
 	return t
 
 def t_error(token):
 	print(f'Illegal character: {token.value}')
+	token.lexer.skip(1)
 
 def t_whitespace(t):
 	r'\s+'
@@ -146,7 +154,7 @@ def p_for(p):
 
 def p_init_expression(p):
 	'''
-	init_exp :  type IDENTIFIER 
+	init_exp :  type IDENTIFIER empty
 				| type IDENTIFIER ASSIGNMENT_OP NUM_LITERAL
 				| empty
 	''' 
@@ -199,3 +207,4 @@ with open(r'parsethis.txt','r') as file:
 	content = file.read()
 	parser.parse(content)
 print(f'Contents of the symbol table are: {symbol_table}')
+print(f'Tokens generated are: {tokens_generated}')
