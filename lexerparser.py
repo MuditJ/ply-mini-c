@@ -3,7 +3,7 @@ import ply.yacc as yacc
 
 tokens = ['HASH','HEADER_FILE','FLOW_OPEN','FLOW_CLOSE','SEMI_COLON',
 'TYPE','SMALL_OPEN','SMALL_CLOSE','IDENTIFIER','COLON',
-'ASSIGNMENT_OP','UNARY_OP','BINARY_OP','NUM_LITERAL','RELATIONAL_OP','QUOTE']
+'ASSIGNMENT_OP','UNARY_OP','BINARY_OP','NUM_LITERAL','RELATIONAL_OP','QUOTE','STRING_LITERAL']
 
 
 reserved = {'include' : 'INCLUDE', 'main': 'MAIN','int':'INT','void':'VOID',
@@ -48,19 +48,26 @@ def t_NUM_LITERAL(t):
 	t.value = int(t.value)
 	return t
 
+
+def t_STRING_LITERAL(t):
+	r'\"[a-zA-Z]+\"'
+	return t
+
+
 def t_check_reserved(t):
 	r'[a-zA-Z][a-zA-Z]*'
 	if t.value in reserved: #If the matched lexeme is one of the reserved words
 		t.type = reserved[t.value]
 	else:
 		t.type = 'IDENTIFIER'
-		if t.value not in symbol_table:
-			symbol_table[-1].append((t.value,t.lexpos))
+		if (t.value,t.type) not in symbol_table:
+			symbol_table[-1].append((t.value,t.type))
 		tokens_generated.append((t.type,t.value))
 	return t
 
+
 def t_error(token):
-	print(f'Illegal character: {token.value}')
+	print(f'Illegal character: {token.value} on line number {t.lineno}')
 	token.lexer.skip(1)
 
 def t_whitespace(t):
@@ -71,11 +78,13 @@ def t_COMMENT(t):
 	r'(\/\/\/.*)|(\/\/\!.*)|(\/\/.*)|(\/\*[.\n]*.*\*\/)'
 	pass
 
+
 def t_newline(t):
 	r'\n+'
 	t.lexer.lineno += len(t.value)
 
 lexer = lex.lex()
+
 #Building the parser
 
 def p_expression(p):
@@ -87,7 +96,7 @@ def p_expression(p):
 def p_header(p):
 	'''
 	header : HASH INCLUDE HEADER_FILE
-	'''
+	''' 
 	print('Derived header')
 	print(f'Symbol table currently is: {symbol_table}')
 
@@ -97,7 +106,6 @@ def p_rest(p):
 		  
 	'''
 	print('Derived rest')
-
 
 def p_stmt(p):
 	'''
@@ -114,7 +122,7 @@ def p_other(p):
 	'''
 	other_stmt : print_stmt other_stmt 
 				| empty
-	'''
+	''' 
 	print('Derived other statement')
 
 
@@ -143,7 +151,7 @@ def p_default(p):
 
 def p_print(p):
 	'''
-	print_stmt : PRINT SMALL_OPEN QUOTE IDENTIFIER QUOTE SMALL_CLOSE SEMI_COLON
+	print_stmt : PRINT SMALL_OPEN STRING_LITERAL SMALL_CLOSE SEMI_COLON
 	'''
 
 def p_for(p):

@@ -3,6 +3,7 @@ Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 Unused terminals:
 
     BINARY_OP
+    QUOTE
     TYPE
 
 Grammar
@@ -22,7 +23,7 @@ Rule 11    switch_body -> case_block switch_body
 Rule 12    switch_body -> default_block
 Rule 13    case_block -> CASE NUM_LITERAL COLON FLOW_OPEN stmt BREAK SEMI_COLON FLOW_CLOSE
 Rule 14    default_block -> DEFAULT COLON FLOW_OPEN stmt BREAK SEMI_COLON FLOW_CLOSE
-Rule 15    print_stmt -> PRINT SMALL_OPEN QUOTE IDENTIFIER QUOTE SMALL_CLOSE SEMI_COLON
+Rule 15    print_stmt -> PRINT SMALL_OPEN STRING_LITERAL SMALL_CLOSE SEMI_COLON
 Rule 16    for_stmt -> FOR SMALL_OPEN init_exp SEMI_COLON conditional_exp SEMI_COLON update_exp SMALL_CLOSE FLOW_OPEN stmt FLOW_CLOSE
 Rule 17    init_exp -> type IDENTIFIER empty
 Rule 18    init_exp -> type IDENTIFIER ASSIGNMENT_OP NUM_LITERAL
@@ -54,17 +55,18 @@ FLOW_OPEN            : 3 10 13 14 16
 FOR                  : 16
 HASH                 : 2
 HEADER_FILE          : 2
-IDENTIFIER           : 10 15 17 18 20 21 21 23
+IDENTIFIER           : 10 17 18 20 21 21 23
 INCLUDE              : 2
 INT                  : 25
 MAIN                 : 3
 NUM_LITERAL          : 13 18 20
 PRINT                : 15
-QUOTE                : 15 15
+QUOTE                : 
 RELATIONAL_OP        : 20 21
 SEMI_COLON           : 13 14 15 16 16
 SMALL_CLOSE          : 3 10 15 16
 SMALL_OPEN           : 3 10 15 16
+STRING_LITERAL       : 15
 SWITCH               : 10
 TYPE                 : 
 UNARY_OP             : 23
@@ -186,7 +188,7 @@ state 11
     (8) other_stmt -> . print_stmt other_stmt
     (9) other_stmt -> . empty
     (29) empty -> .
-    (15) print_stmt -> . PRINT SMALL_OPEN QUOTE IDENTIFIER QUOTE SMALL_CLOSE SEMI_COLON
+    (15) print_stmt -> . PRINT SMALL_OPEN STRING_LITERAL SMALL_CLOSE SEMI_COLON
 
   ! shift/reduce conflict for FOR resolved as shift
   ! shift/reduce conflict for SWITCH resolved as shift
@@ -226,7 +228,7 @@ state 13
     (8) other_stmt -> . print_stmt other_stmt
     (9) other_stmt -> . empty
     (29) empty -> .
-    (15) print_stmt -> . PRINT SMALL_OPEN QUOTE IDENTIFIER QUOTE SMALL_CLOSE SEMI_COLON
+    (15) print_stmt -> . PRINT SMALL_OPEN STRING_LITERAL SMALL_CLOSE SEMI_COLON
 
   ! shift/reduce conflict for FOR resolved as shift
   ! shift/reduce conflict for SWITCH resolved as shift
@@ -260,7 +262,7 @@ state 14
     (8) other_stmt -> . print_stmt other_stmt
     (9) other_stmt -> . empty
     (29) empty -> .
-    (15) print_stmt -> . PRINT SMALL_OPEN QUOTE IDENTIFIER QUOTE SMALL_CLOSE SEMI_COLON
+    (15) print_stmt -> . PRINT SMALL_OPEN STRING_LITERAL SMALL_CLOSE SEMI_COLON
 
   ! shift/reduce conflict for FOR resolved as shift
   ! shift/reduce conflict for SWITCH resolved as shift
@@ -294,7 +296,7 @@ state 15
     (8) other_stmt -> . print_stmt other_stmt
     (9) other_stmt -> . empty
     (29) empty -> .
-    (15) print_stmt -> . PRINT SMALL_OPEN QUOTE IDENTIFIER QUOTE SMALL_CLOSE SEMI_COLON
+    (15) print_stmt -> . PRINT SMALL_OPEN STRING_LITERAL SMALL_CLOSE SEMI_COLON
 
   ! shift/reduce conflict for FOR resolved as shift
   ! shift/reduce conflict for SWITCH resolved as shift
@@ -352,7 +354,7 @@ state 19
     (8) other_stmt -> print_stmt . other_stmt
     (8) other_stmt -> . print_stmt other_stmt
     (9) other_stmt -> . empty
-    (15) print_stmt -> . PRINT SMALL_OPEN QUOTE IDENTIFIER QUOTE SMALL_CLOSE SEMI_COLON
+    (15) print_stmt -> . PRINT SMALL_OPEN STRING_LITERAL SMALL_CLOSE SEMI_COLON
     (29) empty -> .
 
   ! shift/reduce conflict for PRINT resolved as shift
@@ -370,7 +372,7 @@ state 19
 
 state 20
 
-    (15) print_stmt -> PRINT . SMALL_OPEN QUOTE IDENTIFIER QUOTE SMALL_CLOSE SEMI_COLON
+    (15) print_stmt -> PRINT . SMALL_OPEN STRING_LITERAL SMALL_CLOSE SEMI_COLON
 
     SMALL_OPEN      shift and go to state 29
 
@@ -459,9 +461,9 @@ state 28
 
 state 29
 
-    (15) print_stmt -> PRINT SMALL_OPEN . QUOTE IDENTIFIER QUOTE SMALL_CLOSE SEMI_COLON
+    (15) print_stmt -> PRINT SMALL_OPEN . STRING_LITERAL SMALL_CLOSE SEMI_COLON
 
-    QUOTE           shift and go to state 38
+    STRING_LITERAL  shift and go to state 38
 
 
 state 30
@@ -523,9 +525,9 @@ state 37
 
 state 38
 
-    (15) print_stmt -> PRINT SMALL_OPEN QUOTE . IDENTIFIER QUOTE SMALL_CLOSE SEMI_COLON
+    (15) print_stmt -> PRINT SMALL_OPEN STRING_LITERAL . SMALL_CLOSE SEMI_COLON
 
-    IDENTIFIER      shift and go to state 42
+    SMALL_CLOSE     shift and go to state 42
 
 
 state 39
@@ -562,9 +564,9 @@ state 41
 
 state 42
 
-    (15) print_stmt -> PRINT SMALL_OPEN QUOTE IDENTIFIER . QUOTE SMALL_CLOSE SEMI_COLON
+    (15) print_stmt -> PRINT SMALL_OPEN STRING_LITERAL SMALL_CLOSE . SEMI_COLON
 
-    QUOTE           shift and go to state 49
+    SEMI_COLON      shift and go to state 49
 
 
 state 43
@@ -620,9 +622,13 @@ state 48
 
 state 49
 
-    (15) print_stmt -> PRINT SMALL_OPEN QUOTE IDENTIFIER QUOTE . SMALL_CLOSE SEMI_COLON
+    (15) print_stmt -> PRINT SMALL_OPEN STRING_LITERAL SMALL_CLOSE SEMI_COLON .
 
-    SMALL_CLOSE     shift and go to state 58
+    PRINT           reduce using rule 15 (print_stmt -> PRINT SMALL_OPEN STRING_LITERAL SMALL_CLOSE SEMI_COLON .)
+    FOR             reduce using rule 15 (print_stmt -> PRINT SMALL_OPEN STRING_LITERAL SMALL_CLOSE SEMI_COLON .)
+    SWITCH          reduce using rule 15 (print_stmt -> PRINT SMALL_OPEN STRING_LITERAL SMALL_CLOSE SEMI_COLON .)
+    FLOW_CLOSE      reduce using rule 15 (print_stmt -> PRINT SMALL_OPEN STRING_LITERAL SMALL_CLOSE SEMI_COLON .)
+    BREAK           reduce using rule 15 (print_stmt -> PRINT SMALL_OPEN STRING_LITERAL SMALL_CLOSE SEMI_COLON .)
 
 
 state 50
@@ -632,19 +638,19 @@ state 50
     (24) update_exp -> . empty
     (29) empty -> .
 
-    IDENTIFIER      shift and go to state 60
+    IDENTIFIER      shift and go to state 59
     SMALL_CLOSE     reduce using rule 29 (empty -> .)
 
-    update_exp                     shift and go to state 59
-    empty                          shift and go to state 61
+    update_exp                     shift and go to state 58
+    empty                          shift and go to state 60
 
 state 51
 
     (20) conditional_exp -> IDENTIFIER RELATIONAL_OP . NUM_LITERAL
     (21) conditional_exp -> IDENTIFIER RELATIONAL_OP . IDENTIFIER
 
-    NUM_LITERAL     shift and go to state 63
-    IDENTIFIER      shift and go to state 62
+    NUM_LITERAL     shift and go to state 62
+    IDENTIFIER      shift and go to state 61
 
 
 state 52
@@ -658,7 +664,7 @@ state 53
 
     (10) switch_stmt -> SWITCH SMALL_OPEN IDENTIFIER SMALL_CLOSE FLOW_OPEN switch_body . FLOW_CLOSE
 
-    FLOW_CLOSE      shift and go to state 64
+    FLOW_CLOSE      shift and go to state 63
 
 
 state 54
@@ -673,7 +679,7 @@ state 54
     DEFAULT         shift and go to state 57
 
     case_block                     shift and go to state 54
-    switch_body                    shift and go to state 65
+    switch_body                    shift and go to state 64
     default_block                  shift and go to state 55
 
 state 55
@@ -687,59 +693,52 @@ state 56
 
     (13) case_block -> CASE . NUM_LITERAL COLON FLOW_OPEN stmt BREAK SEMI_COLON FLOW_CLOSE
 
-    NUM_LITERAL     shift and go to state 66
+    NUM_LITERAL     shift and go to state 65
 
 
 state 57
 
     (14) default_block -> DEFAULT . COLON FLOW_OPEN stmt BREAK SEMI_COLON FLOW_CLOSE
 
-    COLON           shift and go to state 67
+    COLON           shift and go to state 66
 
 
 state 58
 
-    (15) print_stmt -> PRINT SMALL_OPEN QUOTE IDENTIFIER QUOTE SMALL_CLOSE . SEMI_COLON
+    (16) for_stmt -> FOR SMALL_OPEN init_exp SEMI_COLON conditional_exp SEMI_COLON update_exp . SMALL_CLOSE FLOW_OPEN stmt FLOW_CLOSE
 
-    SEMI_COLON      shift and go to state 68
+    SMALL_CLOSE     shift and go to state 67
 
 
 state 59
 
-    (16) for_stmt -> FOR SMALL_OPEN init_exp SEMI_COLON conditional_exp SEMI_COLON update_exp . SMALL_CLOSE FLOW_OPEN stmt FLOW_CLOSE
+    (23) update_exp -> IDENTIFIER . UNARY_OP
 
-    SMALL_CLOSE     shift and go to state 69
+    UNARY_OP        shift and go to state 68
 
 
 state 60
-
-    (23) update_exp -> IDENTIFIER . UNARY_OP
-
-    UNARY_OP        shift and go to state 70
-
-
-state 61
 
     (24) update_exp -> empty .
 
     SMALL_CLOSE     reduce using rule 24 (update_exp -> empty .)
 
 
-state 62
+state 61
 
     (21) conditional_exp -> IDENTIFIER RELATIONAL_OP IDENTIFIER .
 
     SEMI_COLON      reduce using rule 21 (conditional_exp -> IDENTIFIER RELATIONAL_OP IDENTIFIER .)
 
 
-state 63
+state 62
 
     (20) conditional_exp -> IDENTIFIER RELATIONAL_OP NUM_LITERAL .
 
     SEMI_COLON      reduce using rule 20 (conditional_exp -> IDENTIFIER RELATIONAL_OP NUM_LITERAL .)
 
 
-state 64
+state 63
 
     (10) switch_stmt -> SWITCH SMALL_OPEN IDENTIFIER SMALL_CLOSE FLOW_OPEN switch_body FLOW_CLOSE .
 
@@ -750,60 +749,49 @@ state 64
     BREAK           reduce using rule 10 (switch_stmt -> SWITCH SMALL_OPEN IDENTIFIER SMALL_CLOSE FLOW_OPEN switch_body FLOW_CLOSE .)
 
 
-state 65
+state 64
 
     (11) switch_body -> case_block switch_body .
 
     FLOW_CLOSE      reduce using rule 11 (switch_body -> case_block switch_body .)
 
 
-state 66
+state 65
 
     (13) case_block -> CASE NUM_LITERAL . COLON FLOW_OPEN stmt BREAK SEMI_COLON FLOW_CLOSE
 
-    COLON           shift and go to state 71
+    COLON           shift and go to state 69
+
+
+state 66
+
+    (14) default_block -> DEFAULT COLON . FLOW_OPEN stmt BREAK SEMI_COLON FLOW_CLOSE
+
+    FLOW_OPEN       shift and go to state 70
 
 
 state 67
 
-    (14) default_block -> DEFAULT COLON . FLOW_OPEN stmt BREAK SEMI_COLON FLOW_CLOSE
+    (16) for_stmt -> FOR SMALL_OPEN init_exp SEMI_COLON conditional_exp SEMI_COLON update_exp SMALL_CLOSE . FLOW_OPEN stmt FLOW_CLOSE
 
-    FLOW_OPEN       shift and go to state 72
+    FLOW_OPEN       shift and go to state 71
 
 
 state 68
-
-    (15) print_stmt -> PRINT SMALL_OPEN QUOTE IDENTIFIER QUOTE SMALL_CLOSE SEMI_COLON .
-
-    PRINT           reduce using rule 15 (print_stmt -> PRINT SMALL_OPEN QUOTE IDENTIFIER QUOTE SMALL_CLOSE SEMI_COLON .)
-    FOR             reduce using rule 15 (print_stmt -> PRINT SMALL_OPEN QUOTE IDENTIFIER QUOTE SMALL_CLOSE SEMI_COLON .)
-    SWITCH          reduce using rule 15 (print_stmt -> PRINT SMALL_OPEN QUOTE IDENTIFIER QUOTE SMALL_CLOSE SEMI_COLON .)
-    FLOW_CLOSE      reduce using rule 15 (print_stmt -> PRINT SMALL_OPEN QUOTE IDENTIFIER QUOTE SMALL_CLOSE SEMI_COLON .)
-    BREAK           reduce using rule 15 (print_stmt -> PRINT SMALL_OPEN QUOTE IDENTIFIER QUOTE SMALL_CLOSE SEMI_COLON .)
-
-
-state 69
-
-    (16) for_stmt -> FOR SMALL_OPEN init_exp SEMI_COLON conditional_exp SEMI_COLON update_exp SMALL_CLOSE . FLOW_OPEN stmt FLOW_CLOSE
-
-    FLOW_OPEN       shift and go to state 73
-
-
-state 70
 
     (23) update_exp -> IDENTIFIER UNARY_OP .
 
     SMALL_CLOSE     reduce using rule 23 (update_exp -> IDENTIFIER UNARY_OP .)
 
 
-state 71
+state 69
 
     (13) case_block -> CASE NUM_LITERAL COLON . FLOW_OPEN stmt BREAK SEMI_COLON FLOW_CLOSE
 
-    FLOW_OPEN       shift and go to state 74
+    FLOW_OPEN       shift and go to state 72
 
 
-state 72
+state 70
 
     (14) default_block -> DEFAULT COLON FLOW_OPEN . stmt BREAK SEMI_COLON FLOW_CLOSE
     (4) stmt -> . for_stmt stmt
@@ -815,7 +803,73 @@ state 72
     (8) other_stmt -> . print_stmt other_stmt
     (9) other_stmt -> . empty
     (29) empty -> .
-    (15) print_stmt -> . PRINT SMALL_OPEN QUOTE IDENTIFIER QUOTE SMALL_CLOSE SEMI_COLON
+    (15) print_stmt -> . PRINT SMALL_OPEN STRING_LITERAL SMALL_CLOSE SEMI_COLON
+
+  ! shift/reduce conflict for FOR resolved as shift
+  ! shift/reduce conflict for SWITCH resolved as shift
+  ! shift/reduce conflict for PRINT resolved as shift
+    FOR             shift and go to state 17
+    SWITCH          shift and go to state 18
+    BREAK           reduce using rule 29 (empty -> .)
+    PRINT           shift and go to state 20
+
+  ! FOR             [ reduce using rule 29 (empty -> .) ]
+  ! SWITCH          [ reduce using rule 29 (empty -> .) ]
+  ! PRINT           [ reduce using rule 29 (empty -> .) ]
+
+    stmt                           shift and go to state 73
+    for_stmt                       shift and go to state 13
+    switch_stmt                    shift and go to state 14
+    other_stmt                     shift and go to state 15
+    empty                          shift and go to state 16
+    print_stmt                     shift and go to state 19
+
+state 71
+
+    (16) for_stmt -> FOR SMALL_OPEN init_exp SEMI_COLON conditional_exp SEMI_COLON update_exp SMALL_CLOSE FLOW_OPEN . stmt FLOW_CLOSE
+    (4) stmt -> . for_stmt stmt
+    (5) stmt -> . switch_stmt stmt
+    (6) stmt -> . other_stmt stmt
+    (7) stmt -> . empty
+    (16) for_stmt -> . FOR SMALL_OPEN init_exp SEMI_COLON conditional_exp SEMI_COLON update_exp SMALL_CLOSE FLOW_OPEN stmt FLOW_CLOSE
+    (10) switch_stmt -> . SWITCH SMALL_OPEN IDENTIFIER SMALL_CLOSE FLOW_OPEN switch_body FLOW_CLOSE
+    (8) other_stmt -> . print_stmt other_stmt
+    (9) other_stmt -> . empty
+    (29) empty -> .
+    (15) print_stmt -> . PRINT SMALL_OPEN STRING_LITERAL SMALL_CLOSE SEMI_COLON
+
+  ! shift/reduce conflict for FOR resolved as shift
+  ! shift/reduce conflict for SWITCH resolved as shift
+  ! shift/reduce conflict for PRINT resolved as shift
+    FOR             shift and go to state 17
+    SWITCH          shift and go to state 18
+    FLOW_CLOSE      reduce using rule 29 (empty -> .)
+    PRINT           shift and go to state 20
+
+  ! FOR             [ reduce using rule 29 (empty -> .) ]
+  ! SWITCH          [ reduce using rule 29 (empty -> .) ]
+  ! PRINT           [ reduce using rule 29 (empty -> .) ]
+
+    stmt                           shift and go to state 74
+    for_stmt                       shift and go to state 13
+    switch_stmt                    shift and go to state 14
+    other_stmt                     shift and go to state 15
+    empty                          shift and go to state 16
+    print_stmt                     shift and go to state 19
+
+state 72
+
+    (13) case_block -> CASE NUM_LITERAL COLON FLOW_OPEN . stmt BREAK SEMI_COLON FLOW_CLOSE
+    (4) stmt -> . for_stmt stmt
+    (5) stmt -> . switch_stmt stmt
+    (6) stmt -> . other_stmt stmt
+    (7) stmt -> . empty
+    (16) for_stmt -> . FOR SMALL_OPEN init_exp SEMI_COLON conditional_exp SEMI_COLON update_exp SMALL_CLOSE FLOW_OPEN stmt FLOW_CLOSE
+    (10) switch_stmt -> . SWITCH SMALL_OPEN IDENTIFIER SMALL_CLOSE FLOW_OPEN switch_body FLOW_CLOSE
+    (8) other_stmt -> . print_stmt other_stmt
+    (9) other_stmt -> . empty
+    (29) empty -> .
+    (15) print_stmt -> . PRINT SMALL_OPEN STRING_LITERAL SMALL_CLOSE SEMI_COLON
 
   ! shift/reduce conflict for FOR resolved as shift
   ! shift/reduce conflict for SWITCH resolved as shift
@@ -838,99 +892,33 @@ state 72
 
 state 73
 
-    (16) for_stmt -> FOR SMALL_OPEN init_exp SEMI_COLON conditional_exp SEMI_COLON update_exp SMALL_CLOSE FLOW_OPEN . stmt FLOW_CLOSE
-    (4) stmt -> . for_stmt stmt
-    (5) stmt -> . switch_stmt stmt
-    (6) stmt -> . other_stmt stmt
-    (7) stmt -> . empty
-    (16) for_stmt -> . FOR SMALL_OPEN init_exp SEMI_COLON conditional_exp SEMI_COLON update_exp SMALL_CLOSE FLOW_OPEN stmt FLOW_CLOSE
-    (10) switch_stmt -> . SWITCH SMALL_OPEN IDENTIFIER SMALL_CLOSE FLOW_OPEN switch_body FLOW_CLOSE
-    (8) other_stmt -> . print_stmt other_stmt
-    (9) other_stmt -> . empty
-    (29) empty -> .
-    (15) print_stmt -> . PRINT SMALL_OPEN QUOTE IDENTIFIER QUOTE SMALL_CLOSE SEMI_COLON
+    (14) default_block -> DEFAULT COLON FLOW_OPEN stmt . BREAK SEMI_COLON FLOW_CLOSE
 
-  ! shift/reduce conflict for FOR resolved as shift
-  ! shift/reduce conflict for SWITCH resolved as shift
-  ! shift/reduce conflict for PRINT resolved as shift
-    FOR             shift and go to state 17
-    SWITCH          shift and go to state 18
-    FLOW_CLOSE      reduce using rule 29 (empty -> .)
-    PRINT           shift and go to state 20
+    BREAK           shift and go to state 76
 
-  ! FOR             [ reduce using rule 29 (empty -> .) ]
-  ! SWITCH          [ reduce using rule 29 (empty -> .) ]
-  ! PRINT           [ reduce using rule 29 (empty -> .) ]
-
-    stmt                           shift and go to state 76
-    for_stmt                       shift and go to state 13
-    switch_stmt                    shift and go to state 14
-    other_stmt                     shift and go to state 15
-    empty                          shift and go to state 16
-    print_stmt                     shift and go to state 19
 
 state 74
 
-    (13) case_block -> CASE NUM_LITERAL COLON FLOW_OPEN . stmt BREAK SEMI_COLON FLOW_CLOSE
-    (4) stmt -> . for_stmt stmt
-    (5) stmt -> . switch_stmt stmt
-    (6) stmt -> . other_stmt stmt
-    (7) stmt -> . empty
-    (16) for_stmt -> . FOR SMALL_OPEN init_exp SEMI_COLON conditional_exp SEMI_COLON update_exp SMALL_CLOSE FLOW_OPEN stmt FLOW_CLOSE
-    (10) switch_stmt -> . SWITCH SMALL_OPEN IDENTIFIER SMALL_CLOSE FLOW_OPEN switch_body FLOW_CLOSE
-    (8) other_stmt -> . print_stmt other_stmt
-    (9) other_stmt -> . empty
-    (29) empty -> .
-    (15) print_stmt -> . PRINT SMALL_OPEN QUOTE IDENTIFIER QUOTE SMALL_CLOSE SEMI_COLON
+    (16) for_stmt -> FOR SMALL_OPEN init_exp SEMI_COLON conditional_exp SEMI_COLON update_exp SMALL_CLOSE FLOW_OPEN stmt . FLOW_CLOSE
 
-  ! shift/reduce conflict for FOR resolved as shift
-  ! shift/reduce conflict for SWITCH resolved as shift
-  ! shift/reduce conflict for PRINT resolved as shift
-    FOR             shift and go to state 17
-    SWITCH          shift and go to state 18
-    BREAK           reduce using rule 29 (empty -> .)
-    PRINT           shift and go to state 20
+    FLOW_CLOSE      shift and go to state 77
 
-  ! FOR             [ reduce using rule 29 (empty -> .) ]
-  ! SWITCH          [ reduce using rule 29 (empty -> .) ]
-  ! PRINT           [ reduce using rule 29 (empty -> .) ]
-
-    stmt                           shift and go to state 77
-    for_stmt                       shift and go to state 13
-    switch_stmt                    shift and go to state 14
-    other_stmt                     shift and go to state 15
-    empty                          shift and go to state 16
-    print_stmt                     shift and go to state 19
 
 state 75
 
-    (14) default_block -> DEFAULT COLON FLOW_OPEN stmt . BREAK SEMI_COLON FLOW_CLOSE
+    (13) case_block -> CASE NUM_LITERAL COLON FLOW_OPEN stmt . BREAK SEMI_COLON FLOW_CLOSE
 
     BREAK           shift and go to state 78
 
 
 state 76
 
-    (16) for_stmt -> FOR SMALL_OPEN init_exp SEMI_COLON conditional_exp SEMI_COLON update_exp SMALL_CLOSE FLOW_OPEN stmt . FLOW_CLOSE
+    (14) default_block -> DEFAULT COLON FLOW_OPEN stmt BREAK . SEMI_COLON FLOW_CLOSE
 
-    FLOW_CLOSE      shift and go to state 79
+    SEMI_COLON      shift and go to state 79
 
 
 state 77
-
-    (13) case_block -> CASE NUM_LITERAL COLON FLOW_OPEN stmt . BREAK SEMI_COLON FLOW_CLOSE
-
-    BREAK           shift and go to state 80
-
-
-state 78
-
-    (14) default_block -> DEFAULT COLON FLOW_OPEN stmt BREAK . SEMI_COLON FLOW_CLOSE
-
-    SEMI_COLON      shift and go to state 81
-
-
-state 79
 
     (16) for_stmt -> FOR SMALL_OPEN init_exp SEMI_COLON conditional_exp SEMI_COLON update_exp SMALL_CLOSE FLOW_OPEN stmt FLOW_CLOSE .
 
@@ -941,35 +929,35 @@ state 79
     BREAK           reduce using rule 16 (for_stmt -> FOR SMALL_OPEN init_exp SEMI_COLON conditional_exp SEMI_COLON update_exp SMALL_CLOSE FLOW_OPEN stmt FLOW_CLOSE .)
 
 
-state 80
+state 78
 
     (13) case_block -> CASE NUM_LITERAL COLON FLOW_OPEN stmt BREAK . SEMI_COLON FLOW_CLOSE
 
-    SEMI_COLON      shift and go to state 82
+    SEMI_COLON      shift and go to state 80
 
 
-state 81
+state 79
 
     (14) default_block -> DEFAULT COLON FLOW_OPEN stmt BREAK SEMI_COLON . FLOW_CLOSE
 
-    FLOW_CLOSE      shift and go to state 83
+    FLOW_CLOSE      shift and go to state 81
 
 
-state 82
+state 80
 
     (13) case_block -> CASE NUM_LITERAL COLON FLOW_OPEN stmt BREAK SEMI_COLON . FLOW_CLOSE
 
-    FLOW_CLOSE      shift and go to state 84
+    FLOW_CLOSE      shift and go to state 82
 
 
-state 83
+state 81
 
     (14) default_block -> DEFAULT COLON FLOW_OPEN stmt BREAK SEMI_COLON FLOW_CLOSE .
 
     FLOW_CLOSE      reduce using rule 14 (default_block -> DEFAULT COLON FLOW_OPEN stmt BREAK SEMI_COLON FLOW_CLOSE .)
 
 
-state 84
+state 82
 
     (13) case_block -> CASE NUM_LITERAL COLON FLOW_OPEN stmt BREAK SEMI_COLON FLOW_CLOSE .
 
@@ -992,14 +980,14 @@ WARNING: shift/reduce conflict for FOR in state 15 resolved as shift
 WARNING: shift/reduce conflict for SWITCH in state 15 resolved as shift
 WARNING: shift/reduce conflict for PRINT in state 15 resolved as shift
 WARNING: shift/reduce conflict for PRINT in state 19 resolved as shift
+WARNING: shift/reduce conflict for FOR in state 70 resolved as shift
+WARNING: shift/reduce conflict for SWITCH in state 70 resolved as shift
+WARNING: shift/reduce conflict for PRINT in state 70 resolved as shift
+WARNING: shift/reduce conflict for FOR in state 71 resolved as shift
+WARNING: shift/reduce conflict for SWITCH in state 71 resolved as shift
+WARNING: shift/reduce conflict for PRINT in state 71 resolved as shift
 WARNING: shift/reduce conflict for FOR in state 72 resolved as shift
 WARNING: shift/reduce conflict for SWITCH in state 72 resolved as shift
 WARNING: shift/reduce conflict for PRINT in state 72 resolved as shift
-WARNING: shift/reduce conflict for FOR in state 73 resolved as shift
-WARNING: shift/reduce conflict for SWITCH in state 73 resolved as shift
-WARNING: shift/reduce conflict for PRINT in state 73 resolved as shift
-WARNING: shift/reduce conflict for FOR in state 74 resolved as shift
-WARNING: shift/reduce conflict for SWITCH in state 74 resolved as shift
-WARNING: shift/reduce conflict for PRINT in state 74 resolved as shift
 WARNING: reduce/reduce conflict in state 16 resolved using rule (stmt -> empty)
 WARNING: rejected rule (other_stmt -> empty) in state 16
