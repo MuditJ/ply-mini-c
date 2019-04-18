@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'ASSIGNMENT_OP BINARY_OP BREAK CASE CHAR COLON DEFAULT DOUBLE FLOAT FLOW_CLOSE FLOW_OPEN FOR HASH HEADER_FILE IDENTIFIER INCLUDE INT MAIN NUM_LITERAL PRINT QUOTE RELATIONAL_OP SEMI_COLON SMALL_CLOSE SMALL_OPEN STRING_LITERAL SWITCH TYPE UNARY_OP VOID\n\texpression : header rest\n\t\n\theader : HASH INCLUDE HEADER_FILE\n\t\n\trest : VOID MAIN SMALL_OPEN SMALL_CLOSE FLOW_OPEN stmt FLOW_CLOSE\n\t\t  \n\t\n\tstmt : for_stmt stmt\n\t      | switch_stmt stmt\n\t      | other_stmt stmt \n\t      | empty\n\t\n\tother_stmt : print_stmt other_stmt \n\t\t\t\t| empty\n\t\n\tswitch_stmt : SWITCH SMALL_OPEN IDENTIFIER SMALL_CLOSE FLOW_OPEN switch_body FLOW_CLOSE \n\t\n\tswitch_body : case_block switch_body\n\t\t\t\t| default_block\n\t\n\tcase_block : CASE NUM_LITERAL COLON FLOW_OPEN stmt BREAK SEMI_COLON FLOW_CLOSE\n\t\n\tdefault_block : DEFAULT COLON FLOW_OPEN stmt BREAK SEMI_COLON FLOW_CLOSE\n\t\n\tprint_stmt : PRINT SMALL_OPEN STRING_LITERAL SMALL_CLOSE SEMI_COLON\n\t\n\tfor_stmt : FOR SMALL_OPEN init_exp SEMI_COLON conditional_exp SEMI_COLON update_exp SMALL_CLOSE FLOW_OPEN stmt FLOW_CLOSE\n\t\n\tinit_exp :  type IDENTIFIER empty\n\t\t\t\t| type IDENTIFIER ASSIGNMENT_OP NUM_LITERAL\n\t\t\t\t| empty\n\t\n\tconditional_exp :   IDENTIFIER RELATIONAL_OP NUM_LITERAL\n\t\t\t\t\t\t| IDENTIFIER RELATIONAL_OP IDENTIFIER\n\t\t\t\t\t\t| empty\n\t\n\tupdate_exp : IDENTIFIER UNARY_OP\n\t\t\t\t| empty\n\t\n\ttype : INT\n\t\t | FLOAT\n\t\t | CHAR\n\t\t | DOUBLE\n\tempty :'
+_lr_signature = 'ASSIGNMENT_OP BINARY_OP BREAK CASE CHAR COLON DEFAULT DOUBLE FLOAT FLOW_CLOSE FLOW_OPEN FOR HASH HEADER_FILE IDENTIFIER INCLUDE INT MAIN NUM_LITERAL PRINT QUOTE RELATIONAL_OP SEMI_COLON SMALL_CLOSE SMALL_OPEN STRING_LITERAL SWITCH TYPE UNARY_OP VOID\n\texpression : header rest\n\t\n\theader : HASH INCLUDE HEADER_FILE\n\t\n\trest : VOID MAIN SMALL_OPEN SMALL_CLOSE FLOW_OPEN stmt FLOW_CLOSE\n\t\t  \n\t\n\tstmt : for_stmt stmt\n\t      | switch_stmt stmt\n\t      | other_stmt stmt \n\t      | empty\n\t\n\tother_stmt : print_stmt other_stmt \n\t\t\t\t| arithmetic_stmt other_stmt\n\t\t\t\t| empty\n\t\n\tswitch_stmt : SWITCH SMALL_OPEN IDENTIFIER SMALL_CLOSE FLOW_OPEN switch_body FLOW_CLOSE \n\t\n\tswitch_body : case_block switch_body\n\t\t\t\t| default_block\n\t\n\tcase_block : CASE NUM_LITERAL COLON FLOW_OPEN stmt BREAK SEMI_COLON FLOW_CLOSE\n\t\n\tdefault_block : DEFAULT COLON FLOW_OPEN stmt BREAK SEMI_COLON FLOW_CLOSE\n\t\n\tprint_stmt : PRINT SMALL_OPEN STRING_LITERAL SMALL_CLOSE SEMI_COLON\n\t\n\tarithmetic_stmt : NUM_LITERAL BINARY_OP rest_arithmetic\n\t\n\trest_arithmetic : arithmetic_stmt \n\t\t\t\t\t | NUM_LITERAL\n\n\t\n\tfor_stmt : FOR SMALL_OPEN init_exp SEMI_COLON conditional_exp SEMI_COLON update_exp SMALL_CLOSE FLOW_OPEN stmt FLOW_CLOSE\n\t\n\tinit_exp :  type IDENTIFIER empty\n\t\t\t\t| type IDENTIFIER ASSIGNMENT_OP NUM_LITERAL\n\t\t\t\t| empty\n\t\n\tconditional_exp :   IDENTIFIER RELATIONAL_OP NUM_LITERAL\n\t\t\t\t\t\t| IDENTIFIER RELATIONAL_OP IDENTIFIER\n\t\t\t\t\t\t| empty\n\t\n\tupdate_exp : IDENTIFIER UNARY_OP\n\t\t\t\t| empty\n\t\n\ttype : INT\n\t\t | FLOAT\n\t\t | CHAR\n\t\t | DOUBLE\n\tempty :'
     
-_lr_action_items = {'HASH':([0,],[3,]),'$end':([1,4,21,],[0,-1,-3,]),'VOID':([2,8,],[5,-2,]),'INCLUDE':([3,],[6,]),'MAIN':([5,],[7,]),'HEADER_FILE':([6,],[8,]),'SMALL_OPEN':([7,17,18,20,],[9,25,26,29,]),'SMALL_CLOSE':([9,37,38,50,58,60,68,],[10,41,42,-29,67,-24,-23,]),'FLOW_OPEN':([10,41,66,67,69,],[11,48,70,71,72,]),'FOR':([11,13,14,15,16,19,27,28,49,63,70,71,72,77,],[17,17,17,17,-9,-29,-8,-9,-15,-10,17,17,17,-16,]),'SWITCH':([11,13,14,15,16,19,27,28,49,63,70,71,72,77,],[18,18,18,18,-9,-29,-8,-9,-15,-10,18,18,18,-16,]),'FLOW_CLOSE':([11,12,13,14,15,16,19,22,23,24,27,28,49,53,55,63,64,71,74,77,79,80,81,],[-29,21,-29,-29,-29,-7,-29,-4,-5,-6,-8,-9,-15,63,-12,-10,-11,-29,77,-16,81,82,-14,]),'PRINT':([11,13,14,15,16,19,27,28,49,63,70,71,72,77,],[20,20,20,20,-9,20,-8,-9,-15,-10,20,20,20,-16,]),'BREAK':([13,14,15,16,19,22,23,24,27,28,49,63,70,72,73,75,77,],[-29,-29,-29,-7,-29,-4,-5,-6,-8,-9,-15,-10,-29,-29,76,78,-16,]),'INT':([25,],[33,]),'FLOAT':([25,],[34,]),'CHAR':([25,],[35,]),'DOUBLE':([25,],[36,]),'SEMI_COLON':([25,30,32,39,40,42,43,45,46,52,61,62,76,78,],[-29,39,-19,-29,-29,49,50,-22,-17,-18,-21,-20,79,80,]),'IDENTIFIER':([26,31,33,34,35,36,39,50,51,],[37,40,-25,-26,-27,-28,44,59,61,]),'STRING_LITERAL':([29,],[38,]),'ASSIGNMENT_OP':([40,],[47,]),'RELATIONAL_OP':([44,],[51,]),'NUM_LITERAL':([47,51,56,],[52,62,65,]),'CASE':([48,54,82,],[56,56,-13,]),'DEFAULT':([48,54,82,],[57,57,-13,]),'COLON':([57,65,],[66,69,]),'UNARY_OP':([59,],[68,]),}
+_lr_action_items = {'HASH':([0,],[3,]),'$end':([1,4,23,],[0,-1,-3,]),'VOID':([2,8,],[5,-2,]),'INCLUDE':([3,],[6,]),'MAIN':([5,],[7,]),'HEADER_FILE':([6,],[8,]),'SMALL_OPEN':([7,17,18,21,],[9,27,28,32,]),'SMALL_CLOSE':([9,41,42,57,65,67,75,],[10,48,49,-33,74,-28,-27,]),'FLOW_OPEN':([10,48,73,74,76,],[11,55,77,78,79,]),'FOR':([11,13,14,15,16,19,20,29,30,31,43,44,45,56,70,77,78,79,84,],[17,17,17,17,-10,-33,-33,-8,-10,-9,-19,-17,-18,-16,-11,17,17,17,-20,]),'SWITCH':([11,13,14,15,16,19,20,29,30,31,43,44,45,56,70,77,78,79,84,],[18,18,18,18,-10,-33,-33,-8,-10,-9,-19,-17,-18,-16,-11,18,18,18,-20,]),'FLOW_CLOSE':([11,12,13,14,15,16,19,20,24,25,26,29,30,31,43,44,45,56,60,62,70,71,78,81,84,86,87,88,],[-33,23,-33,-33,-33,-7,-33,-33,-4,-5,-6,-8,-10,-9,-19,-17,-18,-16,70,-13,-11,-12,-33,84,-20,88,89,-15,]),'PRINT':([11,13,14,15,16,19,20,29,30,31,43,44,45,56,70,77,78,79,84,],[21,21,21,21,-10,21,21,-8,-10,-9,-19,-17,-18,-16,-11,21,21,21,-20,]),'NUM_LITERAL':([11,13,14,15,16,19,20,29,30,31,33,43,44,45,54,56,58,63,70,77,78,79,84,],[22,22,22,22,-10,22,22,-8,-10,-9,43,-19,-17,-18,59,-16,69,72,-11,22,22,22,-20,]),'BREAK':([13,14,15,16,19,20,24,25,26,29,30,31,43,44,45,56,70,77,79,80,82,84,],[-33,-33,-33,-7,-33,-33,-4,-5,-6,-8,-10,-9,-19,-17,-18,-16,-11,-33,-33,83,85,-20,]),'BINARY_OP':([22,43,],[33,33,]),'INT':([27,],[37,]),'FLOAT':([27,],[38,]),'CHAR':([27,],[39,]),'DOUBLE':([27,],[40,]),'SEMI_COLON':([27,34,36,46,47,49,50,52,53,59,68,69,83,85,],[-33,46,-23,-33,-33,56,57,-26,-21,-22,-25,-24,86,87,]),'IDENTIFIER':([28,35,37,38,39,40,46,57,58,],[41,47,-29,-30,-31,-32,51,66,68,]),'STRING_LITERAL':([32,],[42,]),'ASSIGNMENT_OP':([47,],[54,]),'RELATIONAL_OP':([51,],[58,]),'CASE':([55,61,89,],[63,63,-14,]),'DEFAULT':([55,61,89,],[64,64,-14,]),'COLON':([64,72,],[73,76,]),'UNARY_OP':([66,],[75,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'expression':([0,],[1,]),'header':([0,],[2,]),'rest':([2,],[4,]),'stmt':([11,13,14,15,70,71,72,],[12,22,23,24,73,74,75,]),'for_stmt':([11,13,14,15,70,71,72,],[13,13,13,13,13,13,13,]),'switch_stmt':([11,13,14,15,70,71,72,],[14,14,14,14,14,14,14,]),'other_stmt':([11,13,14,15,19,70,71,72,],[15,15,15,15,27,15,15,15,]),'empty':([11,13,14,15,19,25,39,40,50,70,71,72,],[16,16,16,16,28,32,45,46,60,16,16,16,]),'print_stmt':([11,13,14,15,19,70,71,72,],[19,19,19,19,19,19,19,19,]),'init_exp':([25,],[30,]),'type':([25,],[31,]),'conditional_exp':([39,],[43,]),'switch_body':([48,54,],[53,64,]),'case_block':([48,54,],[54,54,]),'default_block':([48,54,],[55,55,]),'update_exp':([50,],[58,]),}
+_lr_goto_items = {'expression':([0,],[1,]),'header':([0,],[2,]),'rest':([2,],[4,]),'stmt':([11,13,14,15,77,78,79,],[12,24,25,26,80,81,82,]),'for_stmt':([11,13,14,15,77,78,79,],[13,13,13,13,13,13,13,]),'switch_stmt':([11,13,14,15,77,78,79,],[14,14,14,14,14,14,14,]),'other_stmt':([11,13,14,15,19,20,77,78,79,],[15,15,15,15,29,31,15,15,15,]),'empty':([11,13,14,15,19,20,27,46,47,57,77,78,79,],[16,16,16,16,30,30,36,52,53,67,16,16,16,]),'print_stmt':([11,13,14,15,19,20,77,78,79,],[19,19,19,19,19,19,19,19,19,]),'arithmetic_stmt':([11,13,14,15,19,20,33,77,78,79,],[20,20,20,20,20,20,45,20,20,20,]),'init_exp':([27,],[34,]),'type':([27,],[35,]),'rest_arithmetic':([33,],[44,]),'conditional_exp':([46,],[50,]),'switch_body':([55,61,],[60,71,]),'case_block':([55,61,],[61,61,]),'default_block':([55,61,],[62,62,]),'update_exp':([57,],[65,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -27,14 +27,15 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> expression","S'",1,None,None,None),
-  ('expression -> header rest','expression',2,'p_expression','lexerparser.py',92),
-  ('header -> HASH INCLUDE HEADER_FILE','header',3,'p_header','lexerparser.py',98),
-  ('rest -> VOID MAIN SMALL_OPEN SMALL_CLOSE FLOW_OPEN stmt FLOW_CLOSE','rest',7,'p_rest','lexerparser.py',105),
-  ('stmt -> for_stmt stmt','stmt',2,'p_stmt','lexerparser.py',112),
-  ('stmt -> switch_stmt stmt','stmt',2,'p_stmt','lexerparser.py',113),
-  ('stmt -> other_stmt stmt','stmt',2,'p_stmt','lexerparser.py',114),
-  ('stmt -> empty','stmt',1,'p_stmt','lexerparser.py',115),
-  ('other_stmt -> print_stmt other_stmt','other_stmt',2,'p_other','lexerparser.py',123),
+  ('expression -> header rest','expression',2,'p_expression','lexerparser.py',91),
+  ('header -> HASH INCLUDE HEADER_FILE','header',3,'p_header','lexerparser.py',97),
+  ('rest -> VOID MAIN SMALL_OPEN SMALL_CLOSE FLOW_OPEN stmt FLOW_CLOSE','rest',7,'p_rest','lexerparser.py',104),
+  ('stmt -> for_stmt stmt','stmt',2,'p_stmt','lexerparser.py',111),
+  ('stmt -> switch_stmt stmt','stmt',2,'p_stmt','lexerparser.py',112),
+  ('stmt -> other_stmt stmt','stmt',2,'p_stmt','lexerparser.py',113),
+  ('stmt -> empty','stmt',1,'p_stmt','lexerparser.py',114),
+  ('other_stmt -> print_stmt other_stmt','other_stmt',2,'p_other','lexerparser.py',122),
+  ('other_stmt -> arithmetic_stmt other_stmt','other_stmt',2,'p_other','lexerparser.py',123),
   ('other_stmt -> empty','other_stmt',1,'p_other','lexerparser.py',124),
   ('switch_stmt -> SWITCH SMALL_OPEN IDENTIFIER SMALL_CLOSE FLOW_OPEN switch_body FLOW_CLOSE','switch_stmt',7,'p_switch','lexerparser.py',131),
   ('switch_body -> case_block switch_body','switch_body',2,'p_switch_body','lexerparser.py',137),
@@ -42,18 +43,21 @@ _lr_productions = [
   ('case_block -> CASE NUM_LITERAL COLON FLOW_OPEN stmt BREAK SEMI_COLON FLOW_CLOSE','case_block',8,'p_case','lexerparser.py',144),
   ('default_block -> DEFAULT COLON FLOW_OPEN stmt BREAK SEMI_COLON FLOW_CLOSE','default_block',7,'p_default','lexerparser.py',149),
   ('print_stmt -> PRINT SMALL_OPEN STRING_LITERAL SMALL_CLOSE SEMI_COLON','print_stmt',5,'p_print','lexerparser.py',154),
-  ('for_stmt -> FOR SMALL_OPEN init_exp SEMI_COLON conditional_exp SEMI_COLON update_exp SMALL_CLOSE FLOW_OPEN stmt FLOW_CLOSE','for_stmt',11,'p_for','lexerparser.py',159),
-  ('init_exp -> type IDENTIFIER empty','init_exp',3,'p_init_expression','lexerparser.py',165),
-  ('init_exp -> type IDENTIFIER ASSIGNMENT_OP NUM_LITERAL','init_exp',4,'p_init_expression','lexerparser.py',166),
-  ('init_exp -> empty','init_exp',1,'p_init_expression','lexerparser.py',167),
-  ('conditional_exp -> IDENTIFIER RELATIONAL_OP NUM_LITERAL','conditional_exp',3,'p_conditional_expression','lexerparser.py',172),
-  ('conditional_exp -> IDENTIFIER RELATIONAL_OP IDENTIFIER','conditional_exp',3,'p_conditional_expression','lexerparser.py',173),
-  ('conditional_exp -> empty','conditional_exp',1,'p_conditional_expression','lexerparser.py',174),
-  ('update_exp -> IDENTIFIER UNARY_OP','update_exp',2,'p_update_expression','lexerparser.py',178),
-  ('update_exp -> empty','update_exp',1,'p_update_expression','lexerparser.py',179),
-  ('type -> INT','type',1,'p_maintype','lexerparser.py',184),
-  ('type -> FLOAT','type',1,'p_maintype','lexerparser.py',185),
-  ('type -> CHAR','type',1,'p_maintype','lexerparser.py',186),
-  ('type -> DOUBLE','type',1,'p_maintype','lexerparser.py',187),
-  ('empty -> <empty>','empty',0,'p_empty','lexerparser.py',191),
+  ('arithmetic_stmt -> NUM_LITERAL BINARY_OP rest_arithmetic','arithmetic_stmt',3,'p_arithmetic','lexerparser.py',158),
+  ('rest_arithmetic -> arithmetic_stmt','rest_arithmetic',1,'p_rest_arithemtic','lexerparser.py',163),
+  ('rest_arithmetic -> NUM_LITERAL','rest_arithmetic',1,'p_rest_arithemtic','lexerparser.py',164),
+  ('for_stmt -> FOR SMALL_OPEN init_exp SEMI_COLON conditional_exp SEMI_COLON update_exp SMALL_CLOSE FLOW_OPEN stmt FLOW_CLOSE','for_stmt',11,'p_for','lexerparser.py',169),
+  ('init_exp -> type IDENTIFIER empty','init_exp',3,'p_init_expression','lexerparser.py',175),
+  ('init_exp -> type IDENTIFIER ASSIGNMENT_OP NUM_LITERAL','init_exp',4,'p_init_expression','lexerparser.py',176),
+  ('init_exp -> empty','init_exp',1,'p_init_expression','lexerparser.py',177),
+  ('conditional_exp -> IDENTIFIER RELATIONAL_OP NUM_LITERAL','conditional_exp',3,'p_conditional_expression','lexerparser.py',182),
+  ('conditional_exp -> IDENTIFIER RELATIONAL_OP IDENTIFIER','conditional_exp',3,'p_conditional_expression','lexerparser.py',183),
+  ('conditional_exp -> empty','conditional_exp',1,'p_conditional_expression','lexerparser.py',184),
+  ('update_exp -> IDENTIFIER UNARY_OP','update_exp',2,'p_update_expression','lexerparser.py',188),
+  ('update_exp -> empty','update_exp',1,'p_update_expression','lexerparser.py',189),
+  ('type -> INT','type',1,'p_maintype','lexerparser.py',194),
+  ('type -> FLOAT','type',1,'p_maintype','lexerparser.py',195),
+  ('type -> CHAR','type',1,'p_maintype','lexerparser.py',196),
+  ('type -> DOUBLE','type',1,'p_maintype','lexerparser.py',197),
+  ('empty -> <empty>','empty',0,'p_empty','lexerparser.py',201),
 ]
